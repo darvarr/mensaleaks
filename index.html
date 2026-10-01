@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MensaLeaks</title>
+<meta name="description" content="MensaLeaks — fughe di notizie dal refettorio.">
+<meta name="theme-color" content="#2f4a3a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MensaLeaks">
+<style>
+:root{
+  --bg:#f7f2e7; --surface:#fffdf8; --ink:#22281f; --muted:#6c6a5e; --line:#e6dfcd;
+  --green:#2f4a3a; --green-soft:#e3ebe2; --sun:#f2b632; --sun-soft:#fcefcf; --brown:#6b3f1d;
+  --ice:#3d7ea6; --shadow:0 1px 2px rgba(40,35,20,.06),0 6px 20px rgba(40,35,20,.07);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#151a16; --surface:#1e2520; --ink:#ece8dc; --muted:#a3a597; --line:#2f3830;
+  --green:#9cc4a6; --green-soft:#24332a; --sun:#f2b632; --sun-soft:#3a3120; --brown:#e0b07c;
+  --ice:#8cc4e6; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#151a16; --surface:#1e2520; --ink:#ece8dc; --muted:#a3a597; --line:#2f3830;
+  --green:#9cc4a6; --green-soft:#24332a; --sun:#f2b632; --sun-soft:#3a3120; --brown:#e0b07c;
+  --ice:#8cc4e6; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:16px/1.45 ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);min-height:100dvh;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px 32px}
+header{display:flex;align-items:center;gap:12px;padding:16px 0 8px}
+.logo{width:36px;height:36px;border-radius:10px;flex:none}
+header h1{font-size:15px;font-weight:600;margin:0;color:var(--muted);flex:1;line-height:1.25;
+  overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.icon-btn{border:0;background:transparent;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none}
+.icon-btn:hover{background:var(--green-soft)}
+.icon-btn svg{width:22px;height:22px}
+.hero{padding:12px 0 4px}
+.kicker{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--green)}
+.pill{background:var(--sun-soft);color:var(--brown);border-radius:999px;padding:2px 10px;letter-spacing:.02em;text-transform:none;font-weight:600}
+.hero h2{font-size:30px;line-height:1.1;margin:6px 0 0;font-weight:700;letter-spacing:-.01em}
+.hero h2::first-letter{text-transform:uppercase}
+.tabs{display:flex;gap:4px;background:var(--green-soft);padding:4px;border-radius:12px;margin:16px 0 12px}
+.tabs button{flex:1;border:0;background:transparent;padding:8px;border-radius:9px;font-weight:600;font-size:14px;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.strip{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;margin:0 -16px;padding-left:16px;padding-right:16px;scroll-snap-type:x proximity;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.chip{flex:none;scroll-snap-align:start;width:56px;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:8px 0 7px;text-align:center;position:relative}
+.chip .dw{display:block;font-size:11px;font-weight:600;text-transform:uppercase;color:var(--muted);letter-spacing:.05em}
+.chip .dn{display:block;font-size:20px;font-weight:700;line-height:1.2}
+.chip.today .dn{color:var(--green)}
+.chip.today::after{content:"";position:absolute;left:50%;bottom:4px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--sun)}
+.chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:var(--bg)}
+.chip[aria-pressed="true"] .dw,.chip[aria-pressed="true"] .dn{color:var(--bg)}
+.chip.sep{margin-left:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:6px 18px;touch-action:pan-y}
+.course{display:flex;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.course:last-child{border-bottom:0}
+.num{flex:none;width:28px;height:28px;border-radius:50%;background:var(--sun-soft);color:var(--brown);display:grid;place-items:center;font-size:13px;font-weight:700;margin-top:1px}
+.course.fruit .num{background:var(--green-soft);color:var(--green)}
+.cname{font-size:18px;font-weight:600;line-height:1.3}
+.alt{font-size:15px;color:var(--muted);margin-top:2px}
+.alt b{font-weight:600;color:var(--ink)}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.tag{font-size:12px;border-radius:6px;padding:1px 7px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+.tag.ice{color:var(--ice);border-color:currentColor;background:transparent}
+.navrow{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.navrow button{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 14px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px}
+.navrow button:disabled{opacity:.35}
+.today-btn{color:var(--green)}
+.week h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:20px 0 6px;display:flex;justify-content:space-between}
+.week h3:first-child{margin-top:4px}
+.week h3 .t{color:var(--green)}
+.week .card{padding:2px 16px}
+.week .course{padding:9px 0}
+.week .cname{font-size:16px}
+.week .num{width:24px;height:24px;font-size:12px}
+.week .card.is-today{border:2px solid var(--green)}
+.notes{margin-top:22px;font-size:13px;color:var(--muted)}
+.notes summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.notes ul{padding-left:18px;margin:8px 0}
+.legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:2px 12px;margin-top:6px}
+.empty{text-align:center;padding:40px 8px}
+.empty h2{font-size:24px;margin:16px 0 6px}
+.empty p{color:var(--muted);margin:0 0 20px}
+.btn{border:0;background:var(--green);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;width:100%}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.btn.danger{background:transparent;color:#b3412e;border:1px solid currentColor}
+.stack{display:grid;gap:10px}
+dialog{border:0;padding:0;background:var(--surface);color:var(--ink);border-radius:22px 22px 0 0;width:100%;max-width:560px;margin:auto auto 0;max-height:92dvh;box-shadow:0 -10px 40px rgba(0,0,0,.2)}
+@media (min-width:600px){dialog{border-radius:22px;margin:auto}}
+dialog::backdrop{background:rgba(20,25,20,.45)}
+.sheet{padding:20px 18px calc(24px + env(safe-area-inset-bottom))}
+.sheet h2{margin:0 0 4px;font-size:22px}
+.sheet h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:22px 0 8px}
+.sheet p{margin:0 0 10px;color:var(--muted);font-size:14px}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+textarea{width:100%;min-height:110px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:10px;font:13px/1.4 ui-monospace,Menlo,monospace}
+.weeks{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.weeks button{border:1px solid var(--line);background:var(--bg);border-radius:14px;padding:14px 0;font-size:22px;font-weight:700}
+.weeks button small{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.weeks button[aria-pressed="true"]{background:var(--green);color:var(--bg);border-color:var(--green)}
+.weeks button[aria-pressed="true"] small{color:var(--bg)}
+.shift{display:flex;align-items:center;gap:10px}
+.shift button{flex:none;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-size:20px;font-weight:700}
+.shift span{flex:1;text-align:center;font-weight:600}
+.err{color:#b3412e;font-size:14px;margin-top:6px;min-height:1em}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(120px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;transition:transform .25s;z-index:10}
+.toast.show{transform:translateX(-50%) translateY(0)}
+input[type=file]{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img class="logo" src="icons/icon-192.png" alt="">
+    <h1 id="menuName">MensaLeaks</h1>
+    <button class="icon-btn" id="openSettings" aria-label="Impostazioni">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </header>
+  <main id="app"></main>
+</div>
+
+<dialog id="settings">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="sheetTitle">Impostazioni</h2>
+      <button class="icon-btn" data-close aria-label="Chiudi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div id="sheetBody"></div>
+  </div>
+</dialog>
+<input type="file" id="fileInput" accept="application/json,.json,text/plain">
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+const KEY = 'menuMensa.v1';
+const DAYS = ['lun','mar','mer','gio','ven'];
+const DAY_LONG = {lun:'lunedì',mar:'martedì',mer:'mercoledì',gio:'giovedì',ven:'venerdì'};
+const MS_DAY = 864e5;
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// ---------- date helpers (local, no TZ drift) ----------
+const atNoon = d => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12);
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const fromIso = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d, 12); };
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate()+n); return atNoon(x); };
+const mondayOf = d => addDays(atNoon(d), -((d.getDay()+6)%7));
+const isWeekend = d => d.getDay()===0 || d.getDay()===6;
+const schoolDay = d => isWeekend(d) ? addDays(mondayOf(d), 7) : atNoon(d); // weekend -> next Monday
+const fmt = (d, o) => d.toLocaleDateString('it-IT', o);
+const dayKey = d => DAYS[(d.getDay()+6)%7];
+
+// ---------- state ----------
+let state = load();
+let view = 'day';
+let sel = schoolDay(new Date());
+let pending = null; // menu awaiting start-week choice
+
+function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch { return null; } }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} }
+
+function weekIndex(d){
+  const n = state.menu.settimane.length;
+  const diff = Math.round((mondayOf(d) - fromIso(state.anchorMonday)) / (7*MS_DAY));
+  return (((state.anchorWeek - 1 + diff) % n) + n) % n;
+}
+const coursesFor = d => state.menu.settimane[weekIndex(d)].giorni[dayKey(d)] || [];
+
+// ---------- validation ----------
+function validate(m){
+  if (!m || typeof m !== 'object') throw new Error('Il file non contiene un oggetto JSON.');
+  if (!Array.isArray(m.settimane) || !m.settimane.length) throw new Error('Manca l\'elenco "settimane".');
+  m.settimane.forEach((w, i) => {
+    if (!w || typeof w.giorni !== 'object') throw new Error(`Settimana ${i+1}: manca "giorni".`);
+    DAYS.forEach(k => {
+      const list = w.giorni[k];
+      if (list === undefined) { w.giorni[k] = []; return; }
+      if (!Array.isArray(list)) throw new Error(`Settimana ${i+1}, ${k}: deve essere una lista di portate.`);
+      list.forEach((c, j) => {
+        if (typeof c === 'string') list[j] = c = {nome:c};
+        if (!c || !c.nome) throw new Error(`Settimana ${i+1}, ${k}: portata ${j+1} senza "nome".`);
+        c.allergeni = Array.isArray(c.allergeni) ? c.allergeni.map(Number).filter(Boolean) : [];
+        c.surgelato = !!c.surgelato;
+      });
+    });
+  });
+  m.allergeni = m.allergeni && typeof m.allergeni === 'object' ? m.allergeni : {};
+  m.note = Array.isArray(m.note) ? m.note : (m.note ? [String(m.note)] : []);
+  m.nome = m.nome || 'MensaLeaks';
+  return m;
+}
+
+// ---------- rendering ----------
+function courseHTML(c, i, total){
+  const al = state.menu.allergeni;
+  const fruit = /frutta/i.test(c.nome) && i === total-1;
+  const tags = [];
+  if (c.surgelato) tags.push(`<span class="tag ice" title="Possibile prodotto surgelato">❄ surgelato</span>`);
+  (c.allergeni||[]).forEach(a => tags.push(`<span class="tag" title="Allergene ${a}">${esc(al[a] || 'Allergene '+a)}</span>`));
+  let alt = '';
+  if (c.oppure){
+    const o = typeof c.oppure === 'string' ? {nome:c.oppure} : c.oppure;
+    alt = `<div class="alt">oppure <b>${esc(o.nome)}</b></div>`;
+  }
+  return `<div class="course${fruit?' fruit':''}"><div class="num">${fruit?'🍎':i+1}</div><div>
+    <div class="cname">${esc(c.nome)}</div>${alt}${tags.length?`<div class="tags">${tags.join('')}</div>`:''}</div></div>`;
+}
+const cardHTML = (d, extra='') => {
+  const cs = coursesFor(d);
+  return `<div class="card ${extra}">${cs.length ? cs.map((c,i)=>courseHTML(c,i,cs.length)).join('') :
+    '<div class="course"><div class="cname" style="color:var(--muted)">Nessun piatto indicato</div></div>'}</div>`;
+};
+
+function render(){
+  const app = $('#app');
+  if (!state){ $('#menuName').textContent = 'MensaLeaks'; app.innerHTML = emptyHTML(); bindEmpty(); return; }
+  $('#menuName').textContent = state.menu.nome;
+  const today = atNoon(new Date());
+  const isToday = iso(sel) === iso(today);
+  const rel = isToday ? 'Oggi' : iso(sel) === iso(addDays(today,1)) ? 'Domani'
+            : (isWeekend(today) && iso(sel) === iso(schoolDay(today))) ? 'Lunedì prossimo' : '';
+  const wk = weekIndex(sel) + 1;
+
+  let html = `<section class="hero">
+    <div class="kicker">${rel?`<span>${rel}</span>`:''}<span class="pill">Settimana ${wk} di ${state.menu.settimane.length}</span></div>
+    <h2>${view==='day' ? fmt(sel,{weekday:'long',day:'numeric',month:'long'})
+      : 'Settimana del ' + fmt(mondayOf(sel),{day:'numeric',month:'long'})}</h2></section>
+    <div class="tabs" role="tablist">
+      <button role="tab" data-view="day" aria-selected="${view==='day'}">Giorno</button>
+      <button role="tab" data-view="week" aria-selected="${view==='week'}">Settimana</button></div>`;
+
+  if (view === 'day'){
+    const start = mondayOf(schoolDay(today));
+    let chips = '';
+    for (let w = 0; w < 3; w++) for (let i = 0; i < 5; i++){
+      const d = addDays(start, w*7+i);
+      chips += `<button class="chip${iso(d)===iso(today)?' today':''}${i===0&&w>0?' sep':''}" data-date="${iso(d)}" aria-pressed="${iso(d)===iso(sel)}">
+        <span class="dw">${DAYS[i]}</span><span class="dn">${d.getDate()}</span></button>`;
+    }
+    html += `<div class="strip" id="strip">${chips}</div>
+      <div id="dayCard">${cardHTML(sel)}</div>
+      <div class="navrow">
+        <button data-step="-1">‹ ${DAY_LONG[dayKey(stepDay(sel,-1))]}</button>
+        ${isToday?'':`<button class="today-btn" data-goto="today">Oggi</button>`}
+        <button data-step="1">${DAY_LONG[dayKey(stepDay(sel,1))]} ›</button></div>`;
+  } else {
+    const mon = mondayOf(sel);
+    html += `<div class="week">${DAYS.map((k,i)=>{ const d = addDays(mon,i); const t = iso(d)===iso(today);
+      return `<h3><span>${fmt(d,{weekday:'long',day:'numeric'})}</span>${t?'<span class="t">oggi</span>':''}</h3>${cardHTML(d, t?'is-today':'')}`;}).join('')}</div>
+      <div class="navrow"><button data-wstep="-1">‹ Precedente</button>
+        ${iso(mon)===iso(mondayOf(schoolDay(today)))?'':`<button class="today-btn" data-goto="today">Questa</button>`}
+        <button data-wstep="1">Successiva ›</button></div>`;
+  }
+  html += notesHTML();
+  app.innerHTML = html;
+  bindMain();
+  const on = $('.chip[aria-pressed="true"]');
+  if (on) on.scrollIntoView({inline:'center', block:'nearest'});
+}
+
+function notesHTML(){
+  const m = state.menu, keys = Object.keys(m.allergeni);
+  if (!m.note.length && !keys.length) return '';
+  return `<details class="notes"><summary>Note e legenda allergeni</summary>
+    ${m.note.length?`<ul>${m.note.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`:''}
+    ${keys.length?`<div class="legend">${keys.map(k=>`<span>${esc(k)} · ${esc(m.allergeni[k])}</span>`).join('')}</div>`:''}</details>`;
+}
+
+function stepDay(d, dir){ let x = addDays(d, dir); while (isWeekend(x)) x = addDays(x, dir); return x; }
+
+function bindMain(){
+  document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { view = b.dataset.view; render(); });
+  document.querySelectorAll('[data-date]').forEach(b => b.onclick = () => { sel = fromIso(b.dataset.date); render(); });
+  document.querySelectorAll('[data-step]').forEach(b => b.onclick = () => { sel = stepDay(sel, +b.dataset.step); render(); });
+  document.querySelectorAll('[data-wstep]').forEach(b => b.onclick = () => { sel = addDays(mondayOf(sel), 7*b.dataset.wstep); render(); });
+  document.querySelectorAll('[data-goto]').forEach(b => b.onclick = () => { sel = schoolDay(new Date()); render(); });
+  const card = $('#dayCard');
+  if (card){ // swipe left/right between days
+    let x0 = null, y0 = null;
+    card.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, {passive:true});
+    card.addEventListener('touchend', e => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)*1.5){ sel = stepDay(sel, dx < 0 ? 1 : -1); render(); }
+    });
+  }
+}
+
+function emptyHTML(){
+  return `<div class="empty"><img src="icons/icon-192.png" width="72" height="72" alt="" style="border-radius:18px">
+    <h2>Nessuna fuga di notizie, per ora</h2><p>Importa il file JSON del menù: poi ti chiedo in quale settimana siamo.</p>
+    <div class="stack"><button class="btn" data-act="import">Importa menù</button></div></div>`;
+}
+function bindEmpty(){
+  $('[data-act="import"]').onclick = () => openSheet('import');
+}
+
+// ---------- sheet ----------
+const dlg = $('#settings');
+dlg.addEventListener('click', e => { if (e.target === dlg || e.target.closest('[data-close]')) dlg.close(); });
+$('#openSettings').onclick = () => openSheet(state ? 'settings' : 'import');
+
+function openSheet(mode){
+  const body = $('#sheetBody'), title = $('#sheetTitle');
+  if (mode === 'import'){
+    title.textContent = 'Importa menù';
+    body.innerHTML = `<p>Carica il file JSON generato dalla foto del menù, oppure incolla il testo.</p>
+      <div class="stack"><button class="btn" id="pickFile">Scegli file JSON</button>
+      <textarea id="paste" placeholder='{"versione":1,"settimane":[...]}'></textarea>
+      <button class="btn ghost" id="usePaste">Importa testo incollato</button></div><div class="err" id="err"></div>`;
+    $('#pickFile').onclick = () => $('#fileInput').click();
+    $('#usePaste').onclick = () => parseAndAccept($('#paste').value);
+  } else if (mode === 'start'){
+    const m = pending, mon = mondayOf(schoolDay(new Date()));
+    title.textContent = 'In che settimana siamo?';
+    body.innerHTML = `<p>Menù: <b style="color:var(--ink)">${esc(m.nome)}</b> · ${m.settimane.length} settimane.</p>
+      <p>La settimana che inizia <b style="color:var(--ink)">lunedì ${fmt(mon,{day:'numeric',month:'long'})}</b> corrisponde alla…</p>
+      <div class="weeks" style="grid-template-columns:repeat(${Math.min(m.settimane.length,4)},1fr)">${m.settimane.map((_,i)=>
+        `<button data-w="${i+1}"><small>settimana</small>${i+1}</button>`).join('')}</div>`;
+    body.querySelectorAll('[data-w]').forEach(b => b.onclick = () => {
+      state = { menu: pending, anchorMonday: iso(mon), anchorWeek: +b.dataset.w, importedAt: iso(new Date()) };
+      pending = null; save(); sel = schoolDay(new Date()); view = 'day'; dlg.close(); render(); toast('Menù importato');
+    });
+  } else {
+    title.textContent = 'Impostazioni';
+    const cur = weekIndex(schoolDay(new Date())) + 1, n = state.menu.settimane.length;
+    body.innerHTML = `<h3>Settimana corrente</h3>
+      <p>Se la mensa ha saltato una settimana (vacanze, festività), correggi qui.</p>
+      <div class="shift"><button id="minus" aria-label="Settimana precedente">−</button>
+        <span>Questa settimana è la <b id="curW">${cur}</b> di ${n}</span>
+        <button id="plus" aria-label="Settimana successiva">+</button></div>
+      <h3>Menù</h3><p>${esc(state.menu.nome)}</p>
+      <div class="stack"><button class="btn" id="newMenu">Importa un nuovo menù</button>
+        <button class="btn ghost" id="shareMenu">Condividi con un altro telefono</button>
+        <button class="btn ghost" id="exportMenu">Esporta JSON</button>
+        <button class="btn ghost" id="theme">Tema: ${themeLabel()}</button>
+        <button class="btn danger" id="reset">Elimina menù</button></div>`;
+    const shift = d => { state.anchorWeek = ((state.anchorWeek - 1 + d) % n + n) % n + 1; save();
+      $('#curW').textContent = weekIndex(schoolDay(new Date())) + 1; render(); };
+    $('#minus').onclick = () => shift(-1);
+    $('#plus').onclick = () => shift(1);
+    $('#newMenu').onclick = () => openSheet('import');
+    $('#exportMenu').onclick = exportMenu;
+    $('#shareMenu').onclick = shareMenu;
+    $('#theme').onclick = () => { cycleTheme(); $('#theme').textContent = 'Tema: ' + themeLabel(); };
+    $('#reset').onclick = () => { if ($('#reset').dataset.sure){ state = null; save(); try{localStorage.removeItem(KEY)}catch{}; dlg.close(); render(); }
+      else { $('#reset').dataset.sure = 1; $('#reset').textContent = 'Tocca di nuovo per confermare'; } };
+  }
+  if (!dlg.open) dlg.showModal();
+}
+
+function parseAndAccept(text){
+  try {
+    // Tolerate text around the JSON (chat messages, ``` fences): keep from first { to last }
+    const a = text.indexOf('{'), b = text.lastIndexOf('}');
+    if (a < 0 || b < a) throw new Error('Non trovo un JSON nel testo incollato.');
+    const data = JSON.parse(text.slice(a, b+1));
+    if (data && data.mensaleaks && data.menu){ // shared from another phone: menu + week already set
+      const menu = validate(data.menu);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(data.anchorMonday) || !(data.anchorWeek >= 1 && data.anchorWeek <= menu.settimane.length))
+        throw new Error('Dati di condivisione incompleti.');
+      state = { menu, anchorMonday: data.anchorMonday, anchorWeek: data.anchorWeek, importedAt: iso(new Date()) };
+      save(); sel = schoolDay(new Date()); view = 'day'; dlg.close(); render();
+      toast('Menù importato, settimana già impostata');
+      return;
+    }
+    acceptMenu(data);
+  } catch(e){ const el = $('#err'); if (el) el.textContent = e instanceof SyntaxError ? 'JSON non valido: ' + e.message : e.message; else toast(e.message); }
+}
+function acceptMenu(m){ pending = validate(m); openSheet('start'); }
+
+$('#fileInput').onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  f.text().then(parseAndAccept); e.target.value = '';
+};
+
+async function shareMenu(){
+  const payload = JSON.stringify({ mensaleaks: 1, menu: state.menu, anchorMonday: state.anchorMonday, anchorWeek: state.anchorWeek });
+  const text = 'MensaLeaks: apri l\'app → ⚙ → Importa un nuovo menù → incolla tutto questo messaggio.\n\n' + payload;
+  if (navigator.share){
+    try { await navigator.share({ title: 'MensaLeaks', text }); return; }
+    catch(e){ if (e.name === 'AbortError') return; }
+  }
+  try { await navigator.clipboard.writeText(text); toast('Copiato: incollalo in un messaggio'); }
+  catch { toast('Impossibile copiare: usa "Esporta JSON"'); }
+}
+
+function exportMenu(){
+  const blob = new Blob([JSON.stringify(state.menu, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'mensaleaks.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+// ---------- theme ----------
+const THEMES = ['auto','light','dark'];
+function getTheme(){ try { return localStorage.getItem(KEY+'.theme') || 'auto'; } catch { return 'auto'; } }
+function applyTheme(){ const t = getTheme(); if (t==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.dataset.theme = t; }
+function cycleTheme(){ const t = THEMES[(THEMES.indexOf(getTheme())+1)%3]; try { localStorage.setItem(KEY+'.theme', t); } catch {} applyTheme(); }
+const themeLabel = () => ({auto:'automatico',light:'chiaro',dark:'scuro'})[getTheme()];
+
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(()=>t.classList.remove('show'), 2200); }
+
+// Refresh "today" when the app comes back to the foreground on a new day
+let lastDay = iso(new Date());
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && iso(new Date()) !== lastDay){ lastDay = iso(new Date()); sel = schoolDay(new Date()); render(); }
+});
+
+applyTheme();
+render();
+if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(()=>{});
+})();
+</script>
+</body>
+</html>
