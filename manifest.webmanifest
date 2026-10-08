@@ -1,7 +1,7 @@
 {
-  "name": "MensaLeaks",
-  "short_name": "MensaLeaks",
-  "description": "Fughe di notizie dal refettorio: il menù della mensa, giorno per giorno.",
+  "name": "SchoolPuzzle",
+  "short_name": "SchoolPuzzle",
+  "description": "Il puzzle della scuola, risolto ogni mattina: menù, chiusure, riunioni.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

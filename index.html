@@ -3,35 +3,46 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MensaLeaks</title>
-<meta name="description" content="MensaLeaks — fughe di notizie dal refettorio.">
+<title>SchoolPuzzle</title>
+<meta name="description" content="SchoolPuzzle — il puzzle della scuola, risolto ogni mattina: menù, chiusure, riunioni.">
 <meta name="theme-color" content="#2f4a3a">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MensaLeaks">
+<meta name="apple-mobile-web-app-title" content="SchoolPuzzle">
 <style>
 :root{
   --bg:#f7f2e7; --surface:#fffdf8; --ink:#22281f; --muted:#6c6a5e; --line:#e6dfcd;
   --green:#2f4a3a; --green-soft:#e3ebe2; --sun:#f2b632; --sun-soft:#fcefcf; --brown:#6b3f1d;
   --ice:#3d7ea6; --shadow:0 1px 2px rgba(40,35,20,.06),0 6px 20px rgba(40,35,20,.07);
+  --t-chiusura:#b3412e; --t-chiusura-soft:#f8e3dd;
+  --t-uscita:#a8620a;   --t-uscita-soft:#fbead0;
+  --t-genitori:#2f5f9e; --t-genitori-soft:#e0e9f6;
+  --t-festa:#7a4a9e;    --t-festa-soft:#efe4f6;
+  --t-evento:#6c6a5e;   --t-evento-soft:#efebe0;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#151a16; --surface:#1e2520; --ink:#ece8dc; --muted:#a3a597; --line:#2f3830;
   --green:#9cc4a6; --green-soft:#24332a; --sun:#f2b632; --sun-soft:#3a3120; --brown:#e0b07c;
-  --ice:#8cc4e6; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark;}}
+  --ice:#8cc4e6; --shadow:0 1px 2px rgba(0,0,0,.3);
+  --t-chiusura:#f08a75; --t-chiusura-soft:#3b2420; --t-uscita:#f0b260; --t-uscita-soft:#3a2d18;
+  --t-genitori:#8fb6ec; --t-genitori-soft:#1f2c3d; --t-festa:#c9a0e8; --t-festa-soft:#2f2438;
+  --t-evento:#a3a597; --t-evento-soft:#262c26; color-scheme:dark;}}
 :root[data-theme="dark"]{
   --bg:#151a16; --surface:#1e2520; --ink:#ece8dc; --muted:#a3a597; --line:#2f3830;
   --green:#9cc4a6; --green-soft:#24332a; --sun:#f2b632; --sun-soft:#3a3120; --brown:#e0b07c;
-  --ice:#8cc4e6; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark;}
+  --ice:#8cc4e6; --shadow:0 1px 2px rgba(0,0,0,.3);
+  --t-chiusura:#f08a75; --t-chiusura-soft:#3b2420; --t-uscita:#f0b260; --t-uscita-soft:#3a2d18;
+  --t-genitori:#8fb6ec; --t-genitori-soft:#1f2c3d; --t-festa:#c9a0e8; --t-festa-soft:#2f2438;
+  --t-evento:#a3a597; --t-evento-soft:#262c26; color-scheme:dark;}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink)}
 body{font:16px/1.45 ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);min-height:100dvh;-webkit-tap-highlight-color:transparent}
-button{font:inherit;color:inherit;cursor:pointer}
+button,select{font:inherit;color:inherit;cursor:pointer}
 .wrap{max-width:560px;margin:0 auto;padding:0 16px 32px}
 header{display:flex;align-items:center;gap:12px;padding:16px 0 8px}
 .logo{width:36px;height:36px;border-radius:10px;flex:none}
@@ -41,20 +52,25 @@ header h1{font-size:15px;font-weight:600;margin:0;color:var(--muted);flex:1;line
 .icon-btn:hover{background:var(--green-soft)}
 .icon-btn svg{width:22px;height:22px}
 .hero{padding:12px 0 4px}
-.kicker{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--green)}
+.kicker{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--green);min-height:22px}
 .pill{background:var(--sun-soft);color:var(--brown);border-radius:999px;padding:2px 10px;letter-spacing:.02em;text-transform:none;font-weight:600}
+.pill.uscita{background:var(--t-uscita-soft);color:var(--t-uscita)}
+.pill.chiusa{background:var(--t-chiusura-soft);color:var(--t-chiusura)}
 .hero h2{font-size:30px;line-height:1.1;margin:6px 0 0;font-weight:700;letter-spacing:-.01em}
 .hero h2::first-letter{text-transform:uppercase}
 .tabs{display:flex;gap:4px;background:var(--green-soft);padding:4px;border-radius:12px;margin:16px 0 12px}
-.tabs button{flex:1;border:0;background:transparent;padding:8px;border-radius:9px;font-weight:600;font-size:14px;color:var(--muted)}
+.tabs button{flex:1;border:0;background:transparent;padding:8px 4px;border-radius:9px;font-weight:600;font-size:14px;color:var(--muted)}
 .tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
-.strip{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;margin:0 -16px;padding-left:16px;padding-right:16px;scroll-snap-type:x proximity;scrollbar-width:none}
+.strip{display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:4px 16px 10px;scroll-snap-type:x proximity;scrollbar-width:none}
 .strip::-webkit-scrollbar{display:none}
-.chip{flex:none;scroll-snap-align:start;width:56px;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:8px 0 7px;text-align:center;position:relative}
+.chip{flex:none;scroll-snap-align:start;width:56px;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:8px 0 9px;text-align:center;position:relative}
 .chip .dw{display:block;font-size:11px;font-weight:600;text-transform:uppercase;color:var(--muted);letter-spacing:.05em}
 .chip .dn{display:block;font-size:20px;font-weight:700;line-height:1.2}
 .chip.today .dn{color:var(--green)}
-.chip.today::after{content:"";position:absolute;left:50%;bottom:4px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--sun)}
+.chip .dots{position:absolute;left:0;right:0;bottom:4px;display:flex;justify-content:center;gap:3px}
+.chip .dots i{width:5px;height:5px;border-radius:50%;background:var(--sun)}
+.chip.closed{background:var(--t-chiusura-soft);border-color:transparent}
+.chip.closed .dn{color:var(--t-chiusura);text-decoration:line-through;text-decoration-thickness:2px}
 .chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:var(--bg)}
 .chip[aria-pressed="true"] .dw,.chip[aria-pressed="true"] .dn{color:var(--bg)}
 .chip.sep{margin-left:10px}
@@ -69,9 +85,35 @@ header h1{font-size:15px;font-weight:600;margin:0;color:var(--muted);flex:1;line
 .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .tag{font-size:12px;border-radius:6px;padding:1px 7px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
 .tag.ice{color:var(--ice);border-color:currentColor;background:transparent}
-.navrow{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
-.navrow button{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 14px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px}
-.navrow button:disabled{opacity:.35}
+.closed-card{background:var(--t-chiusura-soft);border-radius:20px;padding:22px 20px;color:var(--t-chiusura)}
+.closed-card .big{font-size:24px;font-weight:700;line-height:1.15}
+.closed-card .sub{margin-top:4px;font-weight:600;color:var(--ink)}
+.closed-card .note{margin-top:8px;font-size:13px;color:var(--muted)}
+.closed-card.small{padding:12px 16px;border-radius:16px}
+.closed-card.small .big{font-size:17px}
+/* events */
+.ev{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:16px;background:var(--ev-soft);margin-bottom:10px;border:0;width:100%;text-align:left}
+.ev .ico{flex:none;width:30px;height:30px;border-radius:10px;background:var(--surface);color:var(--ev);display:grid;place-items:center}
+.ev .ico svg{width:17px;height:17px}
+.ev .tt{font-weight:600;line-height:1.3}
+.ev .mm{font-size:13px;color:var(--muted);margin-top:2px}
+.ev .mm b{color:var(--ev);font-weight:600}
+.t-chiusura{--ev:var(--t-chiusura);--ev-soft:var(--t-chiusura-soft)}
+.t-uscita{--ev:var(--t-uscita);--ev-soft:var(--t-uscita-soft)}
+.t-riunione,.t-colloquio{--ev:var(--t-genitori);--ev-soft:var(--t-genitori-soft)}
+.t-festa{--ev:var(--t-festa);--ev-soft:var(--t-festa-soft)}
+.t-evento,.t-orario{--ev:var(--t-evento);--ev-soft:var(--t-evento-soft)}
+.section-title{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:22px 0 8px;font-weight:600;display:flex;justify-content:space-between;align-items:baseline}
+.section-title button{border:0;background:none;color:var(--green);font-size:13px;font-weight:600;text-transform:none;letter-spacing:0;padding:0}
+.upcoming{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:4px 14px}
+.up{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left}
+.up:last-child{border-bottom:0}
+.up .bar{width:4px;align-self:stretch;border-radius:4px;background:var(--ev);flex:none}
+.up .when{flex:none;width:64px;font-size:13px;font-weight:600;color:var(--muted);line-height:1.2}
+.up .what{font-weight:600;font-size:15px;line-height:1.3}
+.up .what small{display:block;font-weight:500;color:var(--muted);font-size:13px}
+.navrow{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:8px}
+.navrow button{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 14px;font-size:14px;font-weight:600}
 .today-btn{color:var(--green)}
 .week h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:20px 0 6px;display:flex;justify-content:space-between}
 .week h3:first-child{margin-top:4px}
@@ -81,6 +123,26 @@ header h1{font-size:15px;font-weight:600;margin:0;color:var(--muted);flex:1;line
 .week .cname{font-size:16px}
 .week .num{width:24px;height:24px;font-size:12px}
 .week .card.is-today{border:2px solid var(--green)}
+.week .ev{padding:8px 12px;margin-bottom:6px}
+/* agenda */
+.filters{display:flex;gap:6px;overflow-x:auto;margin:0 -16px 6px;padding:2px 16px 8px;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.filters button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--muted)}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.month{font-size:20px;font-weight:700;margin:22px 0 8px}
+.month::first-letter{text-transform:uppercase}
+.agenda-item{display:flex;gap:12px;align-items:stretch;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:8px;width:100%;text-align:left}
+.agenda-item.past{opacity:.55}
+.agenda-item.is-now{border:2px solid var(--green)}
+.dateblock{flex:none;width:46px;border-radius:12px;background:var(--ev-soft);color:var(--ev);text-align:center;padding:5px 0;display:flex;flex-direction:column;justify-content:center}
+.dateblock .d{font-size:20px;font-weight:700;line-height:1.1}
+.dateblock .w{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.dateblock .q{font-size:20px;font-weight:700}
+.agenda-item .body{flex:1;min-width:0}
+.agenda-item .tt{font-weight:600;line-height:1.3}
+.agenda-item .mm{font-size:13px;color:var(--muted);margin-top:3px;display:flex;flex-wrap:wrap;gap:4px 10px}
+.agenda-item .mm .k{color:var(--ev);font-weight:600}
+.badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;border:1px dashed currentColor;border-radius:6px;padding:0 5px;color:var(--t-uscita)}
 .notes{margin-top:22px;font-size:13px;color:var(--muted)}
 .notes summary{cursor:pointer;font-weight:600;color:var(--ink)}
 .notes ul{padding-left:18px;margin:8px 0}
@@ -88,29 +150,33 @@ header h1{font-size:15px;font-weight:600;margin:0;color:var(--muted);flex:1;line
 .empty{text-align:center;padding:40px 8px}
 .empty h2{font-size:24px;margin:16px 0 6px}
 .empty p{color:var(--muted);margin:0 0 20px}
+.soft-empty{color:var(--muted);text-align:center;padding:22px 12px;border:1px dashed var(--line);border-radius:18px}
+.soft-empty button{margin-top:10px}
 .btn{border:0;background:var(--green);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;width:100%}
 .btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
-.btn.danger{background:transparent;color:#b3412e;border:1px solid currentColor}
+.btn.small{width:auto;padding:8px 14px;font-size:14px}
+.btn.danger{background:transparent;color:var(--t-chiusura);border:1px solid currentColor}
 .stack{display:grid;gap:10px}
 dialog{border:0;padding:0;background:var(--surface);color:var(--ink);border-radius:22px 22px 0 0;width:100%;max-width:560px;margin:auto auto 0;max-height:92dvh;box-shadow:0 -10px 40px rgba(0,0,0,.2)}
 @media (min-width:600px){dialog{border-radius:22px;margin:auto}}
 dialog::backdrop{background:rgba(20,25,20,.45)}
 .sheet{padding:20px 18px calc(24px + env(safe-area-inset-bottom))}
 .sheet h2{margin:0 0 4px;font-size:22px}
-.sheet h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:22px 0 8px}
+.sheet h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:24px 0 8px}
 .sheet p{margin:0 0 10px;color:var(--muted);font-size:14px}
 .sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 textarea{width:100%;min-height:110px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:10px;font:13px/1.4 ui-monospace,Menlo,monospace}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row2 label{font-size:13px;color:var(--muted);font-weight:600;display:grid;gap:4px}
+select{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px;font-size:15px}
 .weeks{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .weeks button{border:1px solid var(--line);background:var(--bg);border-radius:14px;padding:14px 0;font-size:22px;font-weight:700}
 .weeks button small{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.weeks button[aria-pressed="true"]{background:var(--green);color:var(--bg);border-color:var(--green)}
-.weeks button[aria-pressed="true"] small{color:var(--bg)}
 .shift{display:flex;align-items:center;gap:10px}
 .shift button{flex:none;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-size:20px;font-weight:700}
 .shift span{flex:1;text-align:center;font-weight:600}
-.err{color:#b3412e;font-size:14px;margin-top:6px;min-height:1em}
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(120px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;transition:transform .25s;z-index:10}
+.err{color:var(--t-chiusura);font-size:14px;margin-top:6px;min-height:1em}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(120px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;transition:transform .25s;z-index:10;max-width:90vw}
 .toast.show{transform:translateX(-50%) translateY(0)}
 input[type=file]{display:none}
 </style>
@@ -119,7 +185,7 @@ input[type=file]{display:none}
 <div class="wrap">
   <header>
     <img class="logo" src="icons/icon-192.png" alt="">
-    <h1 id="menuName">MensaLeaks</h1>
+    <h1 id="appTitle">SchoolPuzzle</h1>
     <button class="icon-btn" id="openSettings" aria-label="Impostazioni">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -139,33 +205,58 @@ input[type=file]{display:none}
 
 <script>
 (() => {
-const KEY = 'menuMensa.v1';
+// Change the app name here (and in manifest.webmanifest / <title>).
+const APP = 'SchoolPuzzle';
+const KEY = 'menuMensa.v1';   // storage key kept stable so existing installs keep their data
 const DAYS = ['lun','mar','mer','gio','ven'];
 const DAY_LONG = {lun:'lunedì',mar:'martedì',mer:'mercoledì',gio:'giovedì',ven:'venerdì'};
 const MS_DAY = 864e5;
+const TYPES = {
+  chiusura: {label:'Scuola chiusa', icon:'<path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'},
+  uscita:   {label:'Uscita anticipata', icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'},
+  riunione: {label:'Riunione', icon:'<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 14.5c3 0 6 1.8 6 5"/>'},
+  colloquio:{label:'Colloquio', icon:'<path d="M4 5h11v8H8l-4 3z"/><path d="M15 9h5v8l-3-2h-6v-2"/>'},
+  festa:    {label:'Festa', icon:'<path d="M5 20 9 8l7 7z"/><path d="M14 4v2M19 9h2M17.5 5.5 16 7"/>'},
+  evento:   {label:'Evento', icon:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>'},
+  orario:   {label:'Orari', icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5h4"/>'},
+};
+const FILTERS = [
+  ['tutto','Tutto', () => true],
+  ['chiusure','Chiusure e uscite', e => e.tipo==='chiusura' || e.tipo==='uscita' || e.uscita],
+  ['genitori','Riunioni e colloqui', e => e.tipo==='riunione' || e.tipo==='colloquio'],
+  ['feste','Feste ed eventi', e => e.tipo==='festa' || e.tipo==='evento'],
+];
 const $ = s => document.querySelector(s);
-const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const svg = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const arr = v => v == null ? [] : Array.isArray(v) ? v : [v];
 
-// ---------- date helpers (local, no TZ drift) ----------
+// ---------- date helpers (local noon, no TZ drift) ----------
 const atNoon = d => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12);
 const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-const fromIso = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d, 12); };
+const fromIso = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d||1, 12); };
 const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate()+n); return atNoon(x); };
 const mondayOf = d => addDays(atNoon(d), -((d.getDay()+6)%7));
 const isWeekend = d => d.getDay()===0 || d.getDay()===6;
-const schoolDay = d => isWeekend(d) ? addDays(mondayOf(d), 7) : atNoon(d); // weekend -> next Monday
+const schoolDay = d => isWeekend(d) ? addDays(mondayOf(d), 7) : atNoon(d);
 const fmt = (d, o) => d.toLocaleDateString('it-IT', o);
 const dayKey = d => DAYS[(d.getDay()+6)%7];
+const todayN = () => atNoon(new Date());
 
 // ---------- state ----------
-let state = load();
-let view = 'day';
+// { menu, anchorMonday, anchorWeek, cal, profilo:{gruppo,sezione} }
+let state = load() || {};
+state.profilo = state.profilo || {gruppo:'', sezione:''};
+let view = 'day', filter = 'tutto', showPast = false;
 let sel = schoolDay(new Date());
-let pending = null; // menu awaiting start-week choice
+let pending = null;
 
 function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch { return null; } }
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} }
+const hasMenu = () => !!state.menu;
+const hasCal = () => !!state.cal;
 
+// ---------- menu ----------
 function weekIndex(d){
   const n = state.menu.settimane.length;
   const diff = Math.round((mondayOf(d) - fromIso(state.anchorMonday)) / (7*MS_DAY));
@@ -173,9 +264,35 @@ function weekIndex(d){
 }
 const coursesFor = d => state.menu.settimane[weekIndex(d)].giorni[dayKey(d)] || [];
 
+// ---------- calendar ----------
+const evStart = e => fromIso(e.data);
+const evEnd = e => fromIso(e.fine || e.data);
+function relevant(e){
+  const p = state.profilo;
+  if (p.gruppo && e.gruppo && !arr(e.gruppo).includes(p.gruppo)) return false;
+  if (p.sezione && e.sezione && !arr(e.sezione).includes(p.sezione)) return false;
+  return true;
+}
+const calEvents = () => hasCal() ? state.cal.eventi.filter(relevant) : [];
+const eventsOn = d => calEvents().filter(e => e.data && evStart(e) <= d && d <= evEnd(e));
+function closureOn(d){
+  if (!hasCal()) return null;
+  const c = eventsOn(d).find(e => e.tipo === 'chiusura');
+  if (c) return c;
+  const p = state.cal.periodo;
+  if (p && p.inizio && d < fromIso(p.inizio)) return {tipo:'chiusura', titolo:'L\'anno scolastico non è ancora iniziato', virtual:true};
+  if (p && p.fine && d > fromIso(p.fine)) return {tipo:'chiusura', titolo:'Anno scolastico finito', virtual:true, note:'Buone vacanze!'};
+  return null;
+}
+const uscitaOn = d => { const e = eventsOn(d).find(e => e.uscita); return e ? e.uscita : null; };
+function whenText(e, short){
+  if (!e.data) return 'data da definire';
+  const s = evStart(e), f = evEnd(e), o = short ? {day:'numeric',month:'short'} : {weekday:'short',day:'numeric',month:'short'};
+  return iso(s) === iso(f) ? fmt(s, o) : `${fmt(s,{day:'numeric',month:'short'})} → ${fmt(f,{day:'numeric',month:'short'})}`;
+}
+
 // ---------- validation ----------
-function validate(m){
-  if (!m || typeof m !== 'object') throw new Error('Il file non contiene un oggetto JSON.');
+function validateMenu(m){
   if (!Array.isArray(m.settimane) || !m.settimane.length) throw new Error('Manca l\'elenco "settimane".');
   m.settimane.forEach((w, i) => {
     if (!w || typeof w.giorni !== 'object') throw new Error(`Settimana ${i+1}: manca "giorni".`);
@@ -193,96 +310,208 @@ function validate(m){
   });
   m.allergeni = m.allergeni && typeof m.allergeni === 'object' ? m.allergeni : {};
   m.note = Array.isArray(m.note) ? m.note : (m.note ? [String(m.note)] : []);
-  m.nome = m.nome || 'MensaLeaks';
+  m.nome = m.nome || 'Menù';
   return m;
 }
+const ISO_RE = /^\d{4}-\d{2}-\d{2}$/;
+function validateCal(c){
+  if (!Array.isArray(c.eventi)) throw new Error('Manca l\'elenco "eventi".');
+  c.eventi = c.eventi.map((e, i) => {
+    if (!e || !e.titolo) throw new Error(`Evento ${i+1}: manca "titolo".`);
+    if (e.data && !ISO_RE.test(e.data)) throw new Error(`Evento "${e.titolo}": data non valida (usa AAAA-MM-GG).`);
+    if (e.fine && !ISO_RE.test(e.fine)) throw new Error(`Evento "${e.titolo}": "fine" non valida.`);
+    if (!e.data && !/^\d{4}-\d{2}$/.test(e.mese || '')) throw new Error(`Evento "${e.titolo}": serve "data" oppure "mese" (AAAA-MM).`);
+    if (!TYPES[e.tipo]) e.tipo = 'evento';
+    return e;
+  }).sort((a,b) => (a.data || a.mese+'-99').localeCompare(b.data || b.mese+'-99'));
+  c.gruppi = arr(c.gruppi); c.sezioni = arr(c.sezioni);
+  c.nome = c.nome || 'Calendario scolastico';
+  return c;
+}
 
-// ---------- rendering ----------
+// ---------- rendering: shared bits ----------
 function courseHTML(c, i, total){
   const al = state.menu.allergeni;
   const fruit = /frutta/i.test(c.nome) && i === total-1;
   const tags = [];
   if (c.surgelato) tags.push(`<span class="tag ice" title="Possibile prodotto surgelato">❄ surgelato</span>`);
-  (c.allergeni||[]).forEach(a => tags.push(`<span class="tag" title="Allergene ${a}">${esc(al[a] || 'Allergene '+a)}</span>`));
+  (c.allergeni||[]).forEach(a => tags.push(`<span class="tag">${esc(al[a] || 'Allergene '+a)}</span>`));
   let alt = '';
-  if (c.oppure){
-    const o = typeof c.oppure === 'string' ? {nome:c.oppure} : c.oppure;
-    alt = `<div class="alt">oppure <b>${esc(o.nome)}</b></div>`;
-  }
+  if (c.oppure){ const o = typeof c.oppure === 'string' ? {nome:c.oppure} : c.oppure; alt = `<div class="alt">oppure <b>${esc(o.nome)}</b></div>`; }
   return `<div class="course${fruit?' fruit':''}"><div class="num">${fruit?'🍎':i+1}</div><div>
     <div class="cname">${esc(c.nome)}</div>${alt}${tags.length?`<div class="tags">${tags.join('')}</div>`:''}</div></div>`;
 }
-const cardHTML = (d, extra='') => {
+function menuCardHTML(d, extra=''){
+  if (!hasMenu()) return '';
   const cs = coursesFor(d);
   return `<div class="card ${extra}">${cs.length ? cs.map((c,i)=>courseHTML(c,i,cs.length)).join('') :
     '<div class="course"><div class="cname" style="color:var(--muted)">Nessun piatto indicato</div></div>'}</div>`;
-};
-
-function render(){
-  const app = $('#app');
-  if (!state){ $('#menuName').textContent = 'MensaLeaks'; app.innerHTML = emptyHTML(); bindEmpty(); return; }
-  $('#menuName').textContent = state.menu.nome;
-  const today = atNoon(new Date());
-  const isToday = iso(sel) === iso(today);
-  const rel = isToday ? 'Oggi' : iso(sel) === iso(addDays(today,1)) ? 'Domani'
-            : (isWeekend(today) && iso(sel) === iso(schoolDay(today))) ? 'Lunedì prossimo' : '';
-  const wk = weekIndex(sel) + 1;
-
-  let html = `<section class="hero">
-    <div class="kicker">${rel?`<span>${rel}</span>`:''}<span class="pill">Settimana ${wk} di ${state.menu.settimane.length}</span></div>
-    <h2>${view==='day' ? fmt(sel,{weekday:'long',day:'numeric',month:'long'})
-      : 'Settimana del ' + fmt(mondayOf(sel),{day:'numeric',month:'long'})}</h2></section>
-    <div class="tabs" role="tablist">
-      <button role="tab" data-view="day" aria-selected="${view==='day'}">Giorno</button>
-      <button role="tab" data-view="week" aria-selected="${view==='week'}">Settimana</button></div>`;
-
-  if (view === 'day'){
-    const start = mondayOf(schoolDay(today));
-    let chips = '';
-    for (let w = 0; w < 3; w++) for (let i = 0; i < 5; i++){
-      const d = addDays(start, w*7+i);
-      chips += `<button class="chip${iso(d)===iso(today)?' today':''}${i===0&&w>0?' sep':''}" data-date="${iso(d)}" aria-pressed="${iso(d)===iso(sel)}">
-        <span class="dw">${DAYS[i]}</span><span class="dn">${d.getDate()}</span></button>`;
-    }
-    html += `<div class="strip" id="strip">${chips}</div>
-      <div id="dayCard">${cardHTML(sel)}</div>
-      <div class="navrow">
-        <button data-step="-1">‹ ${DAY_LONG[dayKey(stepDay(sel,-1))]}</button>
-        ${isToday?'':`<button class="today-btn" data-goto="today">Oggi</button>`}
-        <button data-step="1">${DAY_LONG[dayKey(stepDay(sel,1))]} ›</button></div>`;
-  } else {
-    const mon = mondayOf(sel);
-    html += `<div class="week">${DAYS.map((k,i)=>{ const d = addDays(mon,i); const t = iso(d)===iso(today);
-      return `<h3><span>${fmt(d,{weekday:'long',day:'numeric'})}</span>${t?'<span class="t">oggi</span>':''}</h3>${cardHTML(d, t?'is-today':'')}`;}).join('')}</div>
-      <div class="navrow"><button data-wstep="-1">‹ Precedente</button>
-        ${iso(mon)===iso(mondayOf(schoolDay(today)))?'':`<button class="today-btn" data-goto="today">Questa</button>`}
-        <button data-wstep="1">Successiva ›</button></div>`;
-  }
-  html += notesHTML();
-  app.innerHTML = html;
-  bindMain();
-  const on = $('.chip[aria-pressed="true"]');
-  if (on) on.scrollIntoView({inline:'center', block:'nearest'});
 }
-
-function notesHTML(){
+function closedHTML(c, small){
+  return `<div class="closed-card${small?' small':''}"><div class="big">Scuola chiusa</div>
+    <div class="sub">${esc(c.titolo)}${c.data && c.fine ? ` · fino a ${fmt(evEnd(c),{weekday:'long',day:'numeric',month:'long'})}` : ''}</div>
+    ${!small && c.note ? `<div class="note">${esc(c.note)}</div>` : ''}</div>`;
+}
+function metaParts(e){
+  const m = [];
+  if (e.ora) m.push(esc(e.ora));
+  if (e.uscita) m.push(`<b>uscita ${esc(e.uscita)}</b>`);
+  if (e.gruppo || e.sezione) m.push(esc([arr(e.gruppo).join(', '), arr(e.sezione).join(', ')].filter(Boolean).join(' · ')));
+  return m;
+}
+function evHTML(e){
+  const t = TYPES[e.tipo] || TYPES.evento, m = metaParts(e);
+  if (e.note) m.push(esc(e.note));
+  if (e.da_confermare) m.push('<b>da confermare</b>');
+  return `<div class="ev t-${e.tipo}"><div class="ico">${svg(t.icon)}</div><div>
+    <div class="tt">${esc(e.titolo)}</div>${m.length?`<div class="mm">${m.join(' · ')}</div>`:''}</div></div>`;
+}
+function upcomingHTML(from){
+  if (!hasCal()) return '';
+  const limit = addDays(from, 30);
+  const next = calEvents().filter(e => e.data && evStart(e) > from && e.tipo !== 'orario' && e.tipo !== 'evento');
+  let list = next.filter(e => evStart(e) <= limit).slice(0, 4);
+  if (!list.length) list = next.slice(0, 1);   // nothing soon: still show the next one
+  if (!list.length) return '';
+  return `<div class="section-title"><span>In arrivo</span><button data-view="cal">Tutto il calendario ›</button></div>
+    <div class="upcoming">${list.map(e => `<button class="up t-${e.tipo}" data-jump="${e.data}"><span class="bar"></span>
+      <span class="when">${esc(whenText(e, true))}<br>${fmt(evStart(e),{weekday:'short'})}</span>
+      <span class="what">${esc(e.titolo)}<small>${e.tipo==='chiusura' ? 'Scuola chiusa' : metaParts(e).join(' · ') || esc(TYPES[e.tipo].label)}</small></span></button>`).join('')}</div>`;
+}
+const notesHTML = () => {
+  if (!hasMenu()) return '';
   const m = state.menu, keys = Object.keys(m.allergeni);
   if (!m.note.length && !keys.length) return '';
-  return `<details class="notes"><summary>Note e legenda allergeni</summary>
+  return `<details class="notes"><summary>Note del menù e legenda allergeni</summary>
     ${m.note.length?`<ul>${m.note.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`:''}
     ${keys.length?`<div class="legend">${keys.map(k=>`<span>${esc(k)} · ${esc(m.allergeni[k])}</span>`).join('')}</div>`:''}</details>`;
+};
+const noMenuHTML = () => `<div class="soft-empty">Nessun menù caricato<br><button class="btn ghost small" data-act="import">Importa menù</button></div>`;
+
+// ---------- main render ----------
+function render(){
+  const app = $('#app');
+  $('#appTitle').textContent = APP;
+  if (!hasMenu() && !hasCal()){ app.innerHTML = emptyHTML(); bindCommon(); return; }
+  const today = todayN();
+  const tabs = `<div class="tabs" role="tablist">
+      <button role="tab" data-view="day" aria-selected="${view==='day'}">Giorno</button>
+      <button role="tab" data-view="week" aria-selected="${view==='week'}">Settimana</button>
+      <button role="tab" data-view="cal" aria-selected="${view==='cal'}">Calendario</button></div>`;
+  let html;
+  if (view === 'cal') html = calViewHTML(today, tabs);
+  else {
+    const isToday = iso(sel) === iso(today);
+    const rel = isToday ? 'Oggi' : iso(sel) === iso(addDays(today,1)) ? 'Domani'
+              : (isWeekend(today) && iso(sel) === iso(schoolDay(today))) ? 'Lunedì prossimo' : '';
+    const closed = closureOn(sel), usc = uscitaOn(sel);
+    const kick = [rel ? `<span>${rel}</span>` : ''];
+    if (closed && view==='day') kick.push('<span class="pill chiusa">Chiusa</span>');
+    else if (hasMenu()) kick.push(`<span class="pill">Settimana ${weekIndex(sel)+1} di ${state.menu.settimane.length}</span>`);
+    if (usc && !closed && view==='day') kick.push(`<span class="pill uscita">Uscita ${esc(usc)}</span>`);
+    html = `<section class="hero"><div class="kicker">${kick.join('')}</div>
+      <h2>${view==='day' ? fmt(sel,{weekday:'long',day:'numeric',month:'long'}) : 'Settimana del ' + fmt(mondayOf(sel),{day:'numeric',month:'long'})}</h2></section>${tabs}`;
+    html += view === 'day' ? dayViewHTML(today, isToday) : weekViewHTML(today);
+  }
+  app.innerHTML = html;
+  bindCommon(); bindMain();
+  const on = $('.chip[aria-pressed="true"]');
+  if (on) on.scrollIntoView({inline:'center', block:'nearest'});
+  const now = $('.agenda-item.is-now, [data-anchor]');
+  if (now && view === 'cal' && !render.scrolled){ now.scrollIntoView({block:'start'}); window.scrollBy(0,-80); render.scrolled = true; }
+}
+
+function dayViewHTML(today, isToday){
+  const start = mondayOf(schoolDay(today));
+  let chips = '';
+  for (let w = 0; w < 3; w++) for (let i = 0; i < 5; i++){
+    const d = addDays(start, w*7+i), closed = closureOn(d);
+    const evs = closed ? [] : eventsOn(d).filter(e => e.tipo !== 'orario');
+    const dots = evs.slice(0,3).map(e => `<i style="background:var(--t-${e.tipo==='riunione'||e.tipo==='colloquio'?'genitori':e.tipo})"></i>`).join('');
+    chips += `<button class="chip${iso(d)===iso(today)?' today':''}${closed?' closed':''}${i===0&&w>0?' sep':''}" data-date="${iso(d)}" aria-pressed="${iso(d)===iso(sel)}"
+      aria-label="${fmt(d,{weekday:'long',day:'numeric',month:'long'})}${closed?', scuola chiusa':''}">
+      <span class="dw">${DAYS[i]}</span><span class="dn">${d.getDate()}</span>${dots?`<span class="dots">${dots}</span>`:''}</button>`;
+  }
+  const closed = closureOn(sel);
+  const evs = eventsOn(sel).filter(e => e.tipo !== 'chiusura');
+  let body = closed ? closedHTML(closed) : evs.map(evHTML).join('') + (hasMenu() ? `<div id="dayCard">${menuCardHTML(sel)}</div>` : noMenuHTML());
+  return `<div class="strip">${chips}</div>${body}
+    <div class="navrow">
+      <button data-step="-1">‹ ${DAY_LONG[dayKey(stepDay(sel,-1))]}</button>
+      ${isToday?'':`<button class="today-btn" data-goto="today">Oggi</button>`}
+      <button data-step="1">${DAY_LONG[dayKey(stepDay(sel,1))]} ›</button></div>
+    ${upcomingHTML(sel)}${notesHTML()}`;
+}
+
+function weekViewHTML(today){
+  const mon = mondayOf(sel);
+  const days = DAYS.map((k,i) => {
+    const d = addDays(mon,i), t = iso(d)===iso(today), closed = closureOn(d);
+    const evs = closed ? '' : eventsOn(d).filter(e => e.tipo !== 'orario').map(evHTML).join('');
+    return `<h3><span>${fmt(d,{weekday:'long',day:'numeric'})}</span>${t?'<span class="t">oggi</span>':''}</h3>
+      ${closed ? closedHTML(closed, true) : evs + menuCardHTML(d, t?'is-today':'')}`;
+  }).join('');
+  return `<div class="week">${days}</div>
+    <div class="navrow"><button data-wstep="-1">‹ Precedente</button>
+      ${iso(mon)===iso(mondayOf(schoolDay(today)))?'':`<button class="today-btn" data-goto="today">Questa</button>`}
+      <button data-wstep="1">Successiva ›</button></div>${hasMenu()?'':noMenuHTML()}`;
+}
+
+function calViewHTML(today, tabs){
+  const head = `<section class="hero"><div class="kicker"><span>Calendario</span>${state.profilo.gruppo||state.profilo.sezione?
+    `<span class="pill">${esc([state.profilo.gruppo, state.profilo.sezione].filter(Boolean).join(' · '))}</span>`:''}</div>
+    <h2>${hasCal() ? 'Chiusure, riunioni e feste' : 'Nessun calendario'}</h2></section>${tabs}`;
+  if (!hasCal()) return head + `<div class="soft-empty">Importa il calendario scolastico in formato JSON per vedere chiusure, uscite anticipate, riunioni e feste.<br>
+    <button class="btn ghost small" data-act="import">Importa calendario</button></div>`;
+  const f = FILTERS.find(x => x[0] === filter)[2];
+  const list = calEvents().filter(f);
+  const thisMonth = iso(today).slice(0,7);
+  const isPast = e => e.data ? evEnd(e) < today : e.mese < thisMonth;
+  const pastCount = list.filter(isPast).length;
+  const shown = showPast ? list : list.filter(e => !isPast(e));
+  const groups = new Map();
+  shown.forEach(e => { const k = (e.data || e.mese).slice(0,7); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(e); });
+  let html = head + `<div class="filters">${FILTERS.map(([k,l]) => `<button data-filter="${k}" aria-pressed="${filter===k}">${l}</button>`).join('')}</div>`;
+  if (pastCount) html += `<div class="section-title" style="margin-top:8px"><span>${showPast ? '' : pastCount + ' eventi passati nascosti'}</span>
+    <button data-past>${showPast ? 'Nascondi passati' : 'Mostra passati'}</button></div>`;
+  if (!shown.length) html += `<div class="soft-empty">Nessun evento ${showPast ? '' : 'in programma '}per questo filtro.</div>`;
+  let anchored = false;
+  for (const [k, evs] of groups){
+    html += `<div class="month">${fmt(fromIso(k+'-01'),{month:'long',year:'numeric'})}</div>`;
+    html += evs.map(e => {
+      const past = isPast(e), now = e.data && evStart(e) <= today && today <= evEnd(e);
+      const anchor = !anchored && !past ? (anchored = true, ' data-anchor') : '';
+      const s = e.data ? evStart(e) : null, multi = e.data && e.fine && e.fine !== e.data;
+      const m = metaParts(e);
+      if (multi) m.unshift(`<span class="k">${esc(whenText(e))}</span>`);
+      if (e.note) m.push(esc(e.note));
+      const db = s ? `<span class="d">${s.getDate()}</span><span class="w">${fmt(s,{weekday:'short'})}</span>` : '<span class="q">?</span>';
+      return `<button class="agenda-item t-${e.tipo}${past?' past':''}${now?' is-now':''}"${anchor} ${e.data?`data-jump="${e.data}"`:''}>
+        <span class="dateblock">${db}</span><span class="body">
+        <span class="tt">${esc(e.titolo)} ${e.da_confermare?'<span class="badge">da confermare</span>':''}</span>
+        <span class="mm"><span class="k">${esc(TYPES[e.tipo].label)}</span>${m.map(x=>`<span>${x}</span>`).join('')}</span></span></button>`;
+    }).join('');
+  }
+  return html;
 }
 
 function stepDay(d, dir){ let x = addDays(d, dir); while (isWeekend(x)) x = addDays(x, dir); return x; }
 
+function bindCommon(){
+  document.querySelectorAll('[data-act="import"]').forEach(b => b.onclick = () => openSheet('import'));
+}
 function bindMain(){
-  document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { view = b.dataset.view; render(); });
+  document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { view = b.dataset.view; render.scrolled = false; render(); window.scrollTo(0,0); });
   document.querySelectorAll('[data-date]').forEach(b => b.onclick = () => { sel = fromIso(b.dataset.date); render(); });
   document.querySelectorAll('[data-step]').forEach(b => b.onclick = () => { sel = stepDay(sel, +b.dataset.step); render(); });
   document.querySelectorAll('[data-wstep]').forEach(b => b.onclick = () => { sel = addDays(mondayOf(sel), 7*b.dataset.wstep); render(); });
   document.querySelectorAll('[data-goto]').forEach(b => b.onclick = () => { sel = schoolDay(new Date()); render(); });
-  const card = $('#dayCard');
-  if (card){ // swipe left/right between days
+  document.querySelectorAll('[data-filter]').forEach(b => b.onclick = () => { filter = b.dataset.filter; render(); });
+  document.querySelectorAll('[data-past]').forEach(b => b.onclick = () => { showPast = !showPast; render(); });
+  document.querySelectorAll('[data-jump]').forEach(b => b.onclick = () => {
+    const d = fromIso(b.dataset.jump); sel = isWeekend(d) ? schoolDay(d) : d; view = 'day'; render(); window.scrollTo(0,0); });
+  const card = $('#dayCard') || $('.closed-card');
+  if (card && view === 'day'){
     let x0 = null, y0 = null;
     card.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, {passive:true});
     card.addEventListener('touchend', e => {
@@ -295,25 +524,22 @@ function bindMain(){
 
 function emptyHTML(){
   return `<div class="empty"><img src="icons/icon-192.png" width="72" height="72" alt="" style="border-radius:18px">
-    <h2>Nessuna fuga di notizie, per ora</h2><p>Importa il file JSON del menù: poi ti chiedo in quale settimana siamo.</p>
-    <div class="stack"><button class="btn" data-act="import">Importa menù</button></div></div>`;
-}
-function bindEmpty(){
-  $('[data-act="import"]').onclick = () => openSheet('import');
+    <h2>Il puzzle è ancora nella scatola</h2><p>Importa i pezzi: il menù della mensa e il calendario scolastico (file JSON), in qualsiasi ordine.</p>
+    <div class="stack"><button class="btn" data-act="import">Importa menù o calendario</button></div></div>`;
 }
 
 // ---------- sheet ----------
 const dlg = $('#settings');
 dlg.addEventListener('click', e => { if (e.target === dlg || e.target.closest('[data-close]')) dlg.close(); });
-$('#openSettings').onclick = () => openSheet(state ? 'settings' : 'import');
+$('#openSettings').onclick = () => openSheet(hasMenu() || hasCal() ? 'settings' : 'import');
 
 function openSheet(mode){
   const body = $('#sheetBody'), title = $('#sheetTitle');
   if (mode === 'import'){
-    title.textContent = 'Importa menù';
-    body.innerHTML = `<p>Carica il file JSON generato dalla foto del menù, oppure incolla il testo.</p>
+    title.textContent = 'Importa';
+    body.innerHTML = `<p>Carica un file JSON (menù, calendario, o un messaggio ricevuto da un altro telefono), oppure incolla il testo. Il tipo viene riconosciuto da solo.</p>
       <div class="stack"><button class="btn" id="pickFile">Scegli file JSON</button>
-      <textarea id="paste" placeholder='{"versione":1,"settimane":[...]}'></textarea>
+      <textarea id="paste" placeholder='{"settimane":[...]}  oppure  {"eventi":[...]}'></textarea>
       <button class="btn ghost" id="usePaste">Importa testo incollato</button></div><div class="err" id="err"></div>`;
     $('#pickFile').onclick = () => $('#fileInput').click();
     $('#usePaste').onclick = () => parseAndAccept($('#paste').value);
@@ -325,77 +551,158 @@ function openSheet(mode){
       <div class="weeks" style="grid-template-columns:repeat(${Math.min(m.settimane.length,4)},1fr)">${m.settimane.map((_,i)=>
         `<button data-w="${i+1}"><small>settimana</small>${i+1}</button>`).join('')}</div>`;
     body.querySelectorAll('[data-w]').forEach(b => b.onclick = () => {
-      state = { menu: pending, anchorMonday: iso(mon), anchorWeek: +b.dataset.w, importedAt: iso(new Date()) };
+      Object.assign(state, { menu: pending, anchorMonday: iso(mon), anchorWeek: +b.dataset.w });
       pending = null; save(); sel = schoolDay(new Date()); view = 'day'; dlg.close(); render(); toast('Menù importato');
     });
   } else {
     title.textContent = 'Impostazioni';
-    const cur = weekIndex(schoolDay(new Date())) + 1, n = state.menu.settimane.length;
-    body.innerHTML = `<h3>Settimana corrente</h3>
-      <p>Se la mensa ha saltato una settimana (vacanze, festività), correggi qui.</p>
-      <div class="shift"><button id="minus" aria-label="Settimana precedente">−</button>
-        <span>Questa settimana è la <b id="curW">${cur}</b> di ${n}</span>
-        <button id="plus" aria-label="Settimana successiva">+</button></div>
-      <h3>Menù</h3><p>${esc(state.menu.nome)}</p>
-      <div class="stack"><button class="btn" id="newMenu">Importa un nuovo menù</button>
-        <button class="btn ghost" id="shareMenu">Condividi con un altro telefono</button>
-        <button class="btn ghost" id="exportMenu">Esporta JSON</button>
+    let h = '';
+    if (hasMenu()){
+      const cur = weekIndex(schoolDay(new Date())) + 1, n = state.menu.settimane.length;
+      h += `<h3>Menù</h3><p>${esc(state.menu.nome)}</p>
+        <p>Se la mensa ha saltato una settimana (vacanze, festività), correggi qui.</p>
+        <div class="shift"><button id="minus" aria-label="Settimana precedente">−</button>
+          <span>Questa settimana è la <b id="curW">${cur}</b> di ${n}</span>
+          <button id="plus" aria-label="Settimana successiva">+</button></div>`;
+    }
+    if (hasCal()){
+      const c = state.cal, p = state.profilo;
+      const opts = (list, v) => `<option value="">Tutti</option>` + list.map(x => `<option${x===v?' selected':''}>${esc(x)}</option>`).join('');
+      h += `<h3>Calendario</h3><p>${esc(c.nome)}</p>`;
+      if (c.gruppi.length || c.sezioni.length) h += `<p>Indica gruppo e sezione del bambino: vedrai solo i colloqui e gli avvisi che lo riguardano.</p>
+        <div class="row2">${c.gruppi.length?`<label>Gruppo<select id="pGruppo">${opts(c.gruppi, p.gruppo)}</select></label>`:''}
+        ${c.sezioni.length?`<label>Sezione<select id="pSezione">${opts(c.sezioni, p.sezione)}</select></label>`:''}</div>`;
+      h += `<div class="stack" style="margin-top:12px"><button class="btn ghost" id="ics">Aggiungi al calendario del telefono (.ics)</button></div>`;
+    }
+    h += `<h3>Dati</h3><div class="stack">
+        <button class="btn" id="newData">Importa menù o calendario</button>
+        <button class="btn ghost" id="shareAll">Condividi con un altro telefono</button>
+        <button class="btn ghost" id="exportAll">Esporta backup (JSON)</button>
         <button class="btn ghost" id="theme">Tema: ${themeLabel()}</button>
-        <button class="btn danger" id="reset">Elimina menù</button></div>`;
-    const shift = d => { state.anchorWeek = ((state.anchorWeek - 1 + d) % n + n) % n + 1; save();
-      $('#curW').textContent = weekIndex(schoolDay(new Date())) + 1; render(); };
-    $('#minus').onclick = () => shift(-1);
-    $('#plus').onclick = () => shift(1);
-    $('#newMenu').onclick = () => openSheet('import');
-    $('#exportMenu').onclick = exportMenu;
-    $('#shareMenu').onclick = shareMenu;
+        ${hasMenu()?'<button class="btn danger" id="delMenu">Elimina menù</button>':''}
+        ${hasCal()?'<button class="btn danger" id="delCal">Elimina calendario</button>':''}</div>`;
+    body.innerHTML = h;
+    if (hasMenu()){
+      const n = state.menu.settimane.length;
+      const shift = d => { state.anchorWeek = ((state.anchorWeek - 1 + d) % n + n) % n + 1; save();
+        $('#curW').textContent = weekIndex(schoolDay(new Date())) + 1; render(); };
+      $('#minus').onclick = () => shift(-1);
+      $('#plus').onclick = () => shift(1);
+    }
+    const g = $('#pGruppo'), s = $('#pSezione');
+    if (g) g.onchange = () => { state.profilo.gruppo = g.value; save(); render(); };
+    if (s) s.onchange = () => { state.profilo.sezione = s.value; save(); render(); };
+    if ($('#ics')) $('#ics').onclick = exportIcs;
+    $('#newData').onclick = () => openSheet('import');
+    $('#shareAll').onclick = shareAll;
+    $('#exportAll').onclick = () => download(APP.toLowerCase() + '-backup.json', JSON.stringify(payload(), null, 2), 'application/json');
     $('#theme').onclick = () => { cycleTheme(); $('#theme').textContent = 'Tema: ' + themeLabel(); };
-    $('#reset').onclick = () => { if ($('#reset').dataset.sure){ state = null; save(); try{localStorage.removeItem(KEY)}catch{}; dlg.close(); render(); }
-      else { $('#reset').dataset.sure = 1; $('#reset').textContent = 'Tocca di nuovo per confermare'; } };
+    confirmBtn('#delMenu', () => { delete state.menu; delete state.anchorMonday; delete state.anchorWeek; });
+    confirmBtn('#delCal', () => { delete state.cal; });
   }
   if (!dlg.open) dlg.showModal();
 }
+function confirmBtn(sel, fn){
+  const b = $(sel); if (!b) return;
+  b.onclick = () => {
+    if (b.dataset.sure){ fn(); save(); dlg.close(); render(); toast('Eliminato'); }
+    else { b.dataset.sure = 1; b.textContent = 'Tocca di nuovo per confermare'; }
+  };
+}
 
+// ---------- import ----------
 function parseAndAccept(text){
   try {
-    // Tolerate text around the JSON (chat messages, ``` fences): keep from first { to last }
     const a = text.indexOf('{'), b = text.lastIndexOf('}');
-    if (a < 0 || b < a) throw new Error('Non trovo un JSON nel testo incollato.');
-    const data = JSON.parse(text.slice(a, b+1));
-    if (data && data.mensaleaks && data.menu){ // shared from another phone: menu + week already set
-      const menu = validate(data.menu);
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(data.anchorMonday) || !(data.anchorWeek >= 1 && data.anchorWeek <= menu.settimane.length))
-        throw new Error('Dati di condivisione incompleti.');
-      state = { menu, anchorMonday: data.anchorMonday, anchorWeek: data.anchorWeek, importedAt: iso(new Date()) };
-      save(); sel = schoolDay(new Date()); view = 'day'; dlg.close(); render();
-      toast('Menù importato, settimana già impostata');
-      return;
-    }
-    acceptMenu(data);
-  } catch(e){ const el = $('#err'); if (el) el.textContent = e instanceof SyntaxError ? 'JSON non valido: ' + e.message : e.message; else toast(e.message); }
+    if (a < 0 || b < a) throw new Error('Non trovo un JSON nel testo.');
+    accept(JSON.parse(text.slice(a, b+1)));
+  } catch(e){
+    const msg = e instanceof SyntaxError ? 'JSON non valido: ' + e.message : e.message;
+    const el = $('#err'); if (el && dlg.open) el.textContent = msg; else toast(msg);
+  }
 }
-function acceptMenu(m){ pending = validate(m); openSheet('start'); }
+function accept(data){
+  if (!data || typeof data !== 'object') throw new Error('Il file non contiene un oggetto JSON.');
+  if (data.mensaleaks){                       // from another phone / backup
+    const got = [];
+    if (data.menu){
+      const menu = validateMenu(data.menu);
+      if (!ISO_RE.test(data.anchorMonday) || !(data.anchorWeek >= 1 && data.anchorWeek <= menu.settimane.length)) throw new Error('Dati del menù incompleti.');
+      Object.assign(state, {menu, anchorMonday: data.anchorMonday, anchorWeek: data.anchorWeek}); got.push('menù');
+    }
+    if (data.calendario){ state.cal = validateCal(data.calendario); got.push('calendario'); }
+    if (data.profilo) state.profilo = {gruppo: data.profilo.gruppo || '', sezione: data.profilo.sezione || ''};
+    if (!got.length) throw new Error('Il messaggio non contiene né menù né calendario.');
+    done('Importato: ' + got.join(' e '));
+  } else if (Array.isArray(data.eventi)){
+    state.cal = validateCal(data);
+    const g = state.cal.gruppi.includes(state.profilo.gruppo), s = state.cal.sezioni.includes(state.profilo.sezione);
+    if (!g) state.profilo.gruppo = ''; if (!s) state.profilo.sezione = '';
+    done('Calendario importato: ' + state.cal.eventi.length + ' eventi');
+    if (state.cal.gruppi.length || state.cal.sezioni.length) setTimeout(() => openSheet('settings'), 400);
+  } else if (Array.isArray(data.settimane)){
+    pending = validateMenu(data); openSheet('start');
+  } else throw new Error('Non riconosco il file: serve "settimane" (menù) o "eventi" (calendario).');
+}
+function done(msg){ save(); sel = schoolDay(new Date()); if (dlg.open) dlg.close(); render(); toast(msg); }
 
 $('#fileInput').onchange = e => {
   const f = e.target.files[0]; if (!f) return;
   f.text().then(parseAndAccept); e.target.value = '';
 };
 
-async function shareMenu(){
-  const payload = JSON.stringify({ mensaleaks: 1, menu: state.menu, anchorMonday: state.anchorMonday, anchorWeek: state.anchorWeek });
-  const text = 'MensaLeaks: apri l\'app → ⚙ → Importa un nuovo menù → incolla tutto questo messaggio.\n\n' + payload;
+// ---------- share / export ----------
+function payload(){
+  const p = { mensaleaks: 2 };
+  if (hasMenu()) Object.assign(p, { menu: state.menu, anchorMonday: state.anchorMonday, anchorWeek: state.anchorWeek });
+  if (hasCal()) p.calendario = state.cal;
+  if (state.profilo.gruppo || state.profilo.sezione) p.profilo = state.profilo;
+  return p;
+}
+async function shareAll(){
+  const what = [hasMenu() && 'menù', hasCal() && 'calendario'].filter(Boolean).join(' e ');
+  const text = `${APP} (${what}): apri l'app → ⚙ → Importa → incolla tutto questo messaggio.\n\n` + JSON.stringify(payload());
   if (navigator.share){
-    try { await navigator.share({ title: 'MensaLeaks', text }); return; }
+    try { await navigator.share({ title: APP, text }); return; }
     catch(e){ if (e.name === 'AbortError') return; }
   }
   try { await navigator.clipboard.writeText(text); toast('Copiato: incollalo in un messaggio'); }
-  catch { toast('Impossibile copiare: usa "Esporta JSON"'); }
+  catch { toast('Impossibile copiare: usa "Esporta backup"'); }
 }
-
-function exportMenu(){
-  const blob = new Blob([JSON.stringify(state.menu, null, 2)], {type:'application/json'});
+function download(name, content, type){
+  const blob = new Blob([content], {type});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'mensaleaks.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+function exportIcs(){
+  const today = todayN();
+  const icsDate = d => iso(d).replace(/-/g,'');
+  const escI = s => String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n');
+  const stamp = new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
+  const lines = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//'+APP+'//IT','CALSCALE:GREGORIAN','X-WR-CALNAME:'+escI(state.cal.nome)];
+  const evs = calEvents().filter(e => e.data && evEnd(e) >= today && e.tipo !== 'orario');
+  evs.forEach((e, i) => {
+    const s = evStart(e), f = evEnd(e);
+    const t = (e.ora || '').match(/(\d{1,2})[:.](\d{2})(?:\s*-\s*(\d{1,2})[:.](\d{2}))?/);
+    const single = iso(s) === iso(f);
+    const prefix = e.tipo === 'chiusura' ? '🔒 Scuola chiusa: ' : e.tipo === 'uscita' ? '⏰ ' : '';
+    const desc = [e.uscita && 'Uscita alle ' + e.uscita, e.ora, e.note, e.da_confermare && 'Da confermare'].filter(Boolean).join('\n');
+    lines.push('BEGIN:VEVENT', `UID:${icsDate(s)}-${i}-${e.titolo.replace(/\W+/g,'').slice(0,20)}@${APP.toLowerCase()}`, 'DTSTAMP:'+stamp);
+    if (t && single){
+      const hh = n => String(n).padStart(2,'0');
+      const st = `${icsDate(s)}T${hh(t[1])}${t[2]}00`;
+      const en = t[3] ? `${icsDate(s)}T${hh(t[3])}${t[4]}00` : `${icsDate(s)}T${hh(+t[1]+1)}${t[2]}00`;
+      lines.push('DTSTART:'+st, 'DTEND:'+en);
+    } else lines.push('DTSTART;VALUE=DATE:'+icsDate(s), 'DTEND;VALUE=DATE:'+icsDate(addDays(f,1)));
+    lines.push('SUMMARY:'+escI(prefix + e.titolo + (e.uscita && e.tipo !== 'uscita' ? ' (uscita ' + e.uscita + ')' : '')));
+    if (desc) lines.push('DESCRIPTION:'+escI(desc));
+    if (e.tipo === 'chiusura' || e.tipo === 'uscita' || e.uscita || e.tipo === 'riunione' || e.tipo === 'colloquio')
+      lines.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+escI(e.titolo),'TRIGGER:-PT12H','END:VALARM');
+    lines.push('END:VEVENT');
+  });
+  lines.push('END:VCALENDAR');
+  download('calendario-scuola.ics', lines.join('\r\n'), 'text/calendar');
+  toast(evs.length + ' eventi esportati');
 }
 
 // ---------- theme ----------
@@ -405,9 +712,8 @@ function applyTheme(){ const t = getTheme(); if (t==='auto') document.documentEl
 function cycleTheme(){ const t = THEMES[(THEMES.indexOf(getTheme())+1)%3]; try { localStorage.setItem(KEY+'.theme', t); } catch {} applyTheme(); }
 const themeLabel = () => ({auto:'automatico',light:'chiaro',dark:'scuro'})[getTheme()];
 
-function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(()=>t.classList.remove('show'), 2200); }
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(()=>t.classList.remove('show'), 2600); }
 
-// Refresh "today" when the app comes back to the foreground on a new day
 let lastDay = iso(new Date());
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && iso(new Date()) !== lastDay){ lastDay = iso(new Date()); sel = schoolDay(new Date()); render(); }
