@@ -1,5 +1,7 @@
 # SchoolPuzzle
 
+**English** · [Italiano](README.it.md)
+
 _The school puzzle, solved every morning._
 
 SchoolPuzzle is a small offline Progressive Web App that answers the three questions every parent asks:
